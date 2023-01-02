@@ -151,38 +151,6 @@ def taskWrite(a,taskname):
     url=r'https://graph.microsoft.com/v1.0/me/todo/lists/'+listjson['id']
     apiReq('delete',a,url)    
     
-def teamWrite(a,channelname):
-    #新建team
-    print('    新建team')
-    url=r'https://graph.microsoft.com/v1.0/teams'
-    data={
-         "template@odata.bind": "https://graph.microsoft.com/v1.0/teamsTemplates('standard')",
-         "displayName": channelname,
-         "description": "My Sample Team’s Description"
-         }
-    apiReq('post',a,url,json.dumps(data))
-    print("    获取team信息")
-    url=r'https://graph.microsoft.com/v1.0/me/joinedTeams'
-    teamlist = json.loads(apiReq('get',a,url))
-    for teamcount in range(teamlist['@odata.count']):
-        if teamlist['value'][teamcount]['displayName'] == channelname:
-            #创建频道
-            print("    创建team频道")
-            data={
-                 "displayName": channelname,
-                 "description": "This channel is where we debate all future architecture plans",
-                 "membershipType": "standard"
-                 }
-            url=r'https://graph.microsoft.com/v1.0/teams/'+teamlist['value'][teamcount]['id']+r'/channels'
-            jsontxt = json.loads(apiReq('post',a,url,json.dumps(data)))
-            url=r'https://graph.microsoft.com/v1.0/teams/'+teamlist['value'][teamcount]['id']+r'/channels/'+jsontxt['id']
-            print("    删除team频道")
-            apiReq('delete',a,url)
-            #删除teams
-            print("    删除team")
-            url=r'https://graph.microsoft.com/v1.0/groups/'+teamlist['value'][teamcount]['id']
-            apiReq('delete',a,url)  
-            
 def onenoteWrite(a,notename):
     print('    创建笔记本')
     url=r'https://graph.microsoft.com/v1.0/me/onenote/notebooks'
@@ -242,9 +210,6 @@ for _ in range(1,config['rounds']+1):
         if config['allstart'] == 1 or 1 in choosenum:
             print('excel文件操作')
             excelWrite(a,filesname,'QVQ'+str(random.randint(1,600)))
-        if config['allstart'] == 1 or 2 in choosenum:
-            print('team操作')
-            teamWrite(a,'QVQ'+str(random.randint(1,600)))
         if config['allstart'] == 1 or 3 in choosenum:
             print('task操作')
             taskWrite(a,'QVQ'+str(random.randint(1,600)))
