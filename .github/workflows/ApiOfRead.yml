@@ -1,4 +1,4 @@
-name: Run Read
+name: Read
 
 on: 
   schedule:
